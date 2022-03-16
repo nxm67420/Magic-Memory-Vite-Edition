@@ -14,10 +14,11 @@ const cardImages = [
 ]
 
 function App() {
-  //Dynamic Values
+  //Dynamic Values That Will Change 
   const [cards, setCards] = useState([])
   const [turns, setTurns] = useState(0)
 
+  //User Choices
   const [choiceOne, setChoiceOne] = useState(null)
   const [choiceTwo, setChoiceTwo] = useState(null)
 
@@ -42,30 +43,38 @@ function App() {
 
   //Reset Choice and Increase Turn Count
   //If Match is Found
-  const resetTurn = () => { 
+  const resetTurn = () => {
     setChoiceOne(null)
     setChoiceTwo(null)
     setTurns(prevTurns => prevTurns + 1)
   }
 
   //Compare 2 selected Cards
-  useEffect(() => { 
-    if (choiceOne && choiceTwo) { 
+  //Function only runs after we make two choices 
+  useEffect(() => {
+    if (choiceOne && choiceTwo) {
       if (choiceOne.src === choiceTwo.src) {
-        console.log("MATCH FOUND")
-        resetTurn();
-      }
-      else { 
-        console.log("Not Match");
-        resetTurn();
-      }
+        setCards(prevCards => {
+          return prevCards.map(card => {
+          if (card.src === choiceOne.src) {
+            return { ...card, matched: true }
+          } else {
+            return card
+          }
+        })
+      })
+      resetTurn()
+    } else {
+      resetTurn()
     }
-  }, [choiceOne, choiceTwo])
+  }
+}, [choiceOne, choiceTwo])
 
+  console.log(cards);
+  
   //Returned JSP
   return (
     <div className="App">
-      
       {/* Title */}
       <h1>Magic Match</h1>
 
@@ -79,6 +88,8 @@ function App() {
         ))}
       </div>
 
+      {/* Turn Count */}
+      <p> Turns : {turns }</p>
     </div>
   );//end of Return 
 }//End of Fucntion App

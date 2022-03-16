@@ -9,9 +9,19 @@ export default function SingleCard({ card, handleChoice}) {
 
   return (
     <div className='card'>
-        <div>
-            <img className='front' src={card.src} alt='Front of Cards' />
-            <img className='back' onClick={handleClick} src="/img/cover.png" alt='Back of Cards'></img>
+      <div>
+        
+          {/* Front of Card */}
+          <img className='front'
+          src={card.src}
+          alt='Front of Cards' />
+
+          {/* Back of Card */}
+          <img className='back'
+          onClick={handleClick}
+          src="/img/cover.png"
+          alt='Back of Cards' />
+        
         </div>
     </div>
   )
