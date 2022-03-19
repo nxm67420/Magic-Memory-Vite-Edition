@@ -22,7 +22,10 @@ function App() {
   const [choiceOne, setChoiceOne] = useState(null)
   const [choiceTwo, setChoiceTwo] = useState(null)
   
-  //Reuslts
+  //Disable
+  const [disabled, setDisable] = useState(false)
+
+  //Results
   const [winner, setWinner] = useState('')
   const [cardCount, setCardCount] = useState(0)
 
@@ -33,6 +36,9 @@ function App() {
       .map((card) => ({
         ...card, id: Math.random()
       }))
+    //Reset Choices
+    setChoiceOne(null)
+    setChoiceTwo(null)
     //Reset Message
     setWinner("")
     setCardCount(0)
@@ -54,12 +60,14 @@ function App() {
     setChoiceOne(null)
     setChoiceTwo(null)
     setTurns(prevTurns => prevTurns + 1)
+    setDisable(false)
   }
 
   //Compare 2 selected Cards
   //Function only runs after we make two choices 
   useEffect(() => {
     if (choiceOne && choiceTwo) {
+      setDisable(true)
       if (choiceOne.src === choiceTwo.src) {
         setCardCount(prevCount => prevCount + 1)
         setCards(prevCards => {
@@ -74,7 +82,7 @@ function App() {
       })
       resetTurn()
     } else {
-      setTimeout(() => resetTurn(), 500)
+      setTimeout(() => resetTurn(), 800)
     }
   }
   }, [choiceOne, choiceTwo])
@@ -88,6 +96,11 @@ function App() {
 
   console.log(cards);
   
+//start a new game automatically
+  useEffect(() => { 
+    shuffleCards();
+  },[])
+
   //Returned JSX
   return (
     <div className="App">
@@ -104,12 +117,13 @@ function App() {
             card={card}
             handleChoice={handleChoice}
             flipped={card === choiceOne || card === choiceTwo || card.matched === true}
+            disabled={disabled}
           />
         ))}
       </div>
 
       {/* Turn Count */}
-      <p> Turns : {turns }</p>
+      <p> Turns : {turns}</p>
     </div>
   );//end of Return 
 }//End of Fucntion App
