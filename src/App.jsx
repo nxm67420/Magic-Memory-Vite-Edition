@@ -21,6 +21,10 @@ function App() {
   //User Choices
   const [choiceOne, setChoiceOne] = useState(null)
   const [choiceTwo, setChoiceTwo] = useState(null)
+  
+  //Reuslts
+  const [winner, setWinner] = useState('')
+  const [cardCount, setCardCount] = useState(0)
 
   //shuffle cardImages
   const shuffleCards = () => {
@@ -29,6 +33,9 @@ function App() {
       .map((card) => ({
         ...card, id: Math.random()
       }))
+    //Reset Message
+    setWinner("")
+    setCardCount(0)
     //Create Card Deck 
     setCards(shuffledCards);
     setTurns(0)
@@ -54,37 +61,50 @@ function App() {
   useEffect(() => {
     if (choiceOne && choiceTwo) {
       if (choiceOne.src === choiceTwo.src) {
+        setCardCount(prevCount => prevCount + 1)
         setCards(prevCards => {
           return prevCards.map(card => {
-          if (card.src === choiceOne.src) {
-            return { ...card, matched: true }
-          } else {
-            return card
-          }
+            if (card.src === choiceOne.src) {
+              return { ...card, matched: true }
+            }
+            else {
+              return card
+            }
         })
       })
       resetTurn()
     } else {
-      resetTurn()
+      setTimeout(() => resetTurn(), 500)
     }
   }
-}, [choiceOne, choiceTwo])
+  }, [choiceOne, choiceTwo])
+  
+  //Congratulate User on Winning 
+  useEffect(() => { 
+    if (cardCount === 6) { 
+      setWinner("Congratulations, You Won!!!");
+    }
+  }, [cardCount])
 
   console.log(cards);
   
-  //Returned JSP
+  //Returned JSX
   return (
     <div className="App">
       {/* Title */}
       <h1>Magic Match</h1>
-
+      <h1>{winner}</h1>
       {/* Starts New Game */}
       <button onClick={shuffleCards}>New Game</button>
 
       {/* Display of Cards */}
       <div className='card-grid'>
         {cards.map(card => (
-          <SingleCard key={card.id} card={card} handleChoice={handleChoice} />
+          <SingleCard key={card.id}
+            card={card}
+            handleChoice={handleChoice}
+            flipped={card === choiceOne || card === choiceTwo || card.matched === true}
+          />
         ))}
       </div>
 
